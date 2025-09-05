@@ -6,6 +6,9 @@ import { HomePage } from './pages/HomePage'
 import { AuthPage } from './pages/AuthPage'
 import { EventsPage } from './pages/EventsPage'
 import { EventDetailPage } from './pages/EventDetailPage'
+import { CreateEventPage } from './pages/CreateEventPage'
+import { ProfilePage } from './pages/ProfilePage'
+import { MyBetsPage } from './pages/MyBetsPage'
 
 // Mock user - replace with real auth
 const mockUser = {
@@ -15,7 +18,7 @@ const mockUser = {
   created_at: '2025-01-01T00:00:00Z'
 }
 
-export default function App() {
+function App() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -53,6 +56,9 @@ export default function App() {
             <Route path="/auth" element={<AuthPage user={user} />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
+            <Route path="/create-event" element={<CreateEventPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/my-bets" element={<MyBetsPage />} />
           </Routes>
         </main>
         <Toaster
@@ -72,3 +78,5 @@ export default function App() {
     </Router>
   )
 }
+
+export default App
