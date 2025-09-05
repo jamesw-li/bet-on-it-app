@@ -1,0 +1,136 @@
+import React, { useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Button } from '../components/ui/Button'
+import { Input } from '../components/ui/Input'
+import { Card } from '../components/ui/Card'
+
+interface AuthPageProps {
+  user?: any
+}
+
+export function AuthPage({ user }: AuthPageProps) {
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: ''
+  })
+
+  if (user) {
+    return <Navigate to="/events" replace />
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    
+    // Simulate auth - in real app, integrate with Supabase Auth
+    setTimeout(() => {
+      setLoading(false)
+      // Mock successful auth
+      console.log('Auth submitted:', formData)
+    }, 1000)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold gradient-text">
+            {isSignUp ? 'Create Account' : 'Welcome Back'}
+          </h2>
+          <p className="mt-2 text-slate-600">
+            {isSignUp 
+              ? 'Start creating amazing betting experiences' 
+              : 'Sign in to your account to continue'
+            }
+          </p>
+        </div>
+
+        <Card>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {isSignUp && (
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Input
+                  name="name"
+                  type="text"
+                  placeholder="Full name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="pl-10"
+                  required
+                />
+              </div>
+            )}
+
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <Input
+                name="email"
+                type="email"
+                placeholder="Email address"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="pl-10"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <Input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="pl-10"
+                required
+              />
+            </div>
+
+            <Button
+              type="submit"
+              loading={loading}
+              className="w-full"
+            >
+              {isSignUp ? 'Create Account' : 'Sign In'}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
+            >
+              {isSignUp 
+                ? 'Already have an account? Sign in' 
+                : "Don't have an account? Sign up"
+              }
+            </button>
+          </div>
+        </Card>
+
+        <div className="text-center text-sm text-slate-500">
+          <p>
+            By continuing, you agree to our Terms of Service and Privacy Policy.
+          </p>
+          <p className="mt-2 font-medium">
+            🚨 This app does not process payments. All settlements happen outside the platform.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
