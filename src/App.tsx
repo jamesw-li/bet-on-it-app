@@ -15,7 +15,7 @@ const mockUser = {
   created_at: '2025-01-01T00:00:00Z'
 }
 
-export default App
+export default function App() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
