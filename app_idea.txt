@@ -1,0 +1,210 @@
+# **Product Requirements Document (PRD)**
+
+## App: **Bet On It**
+
+### Prepared by: James W. Li
+
+### Date: September 5, 2025
+
+---
+
+## **1. Overview**
+
+Bet on the Event is a **social betting and prediction platform** for personal events such as weddings, birthdays, holidays, corporate retreats, and sports gatherings.
+
+Participants can place **bets in USD amounts** on event outcomes, with bets **tracked inside the app**. Importantly:
+
+* The app **does not process payments**.
+* All settlement is handled **outside the app** (Venmo, PayPal, Cash, etc.).
+
+The platform should deliver a **modern, mobile-first user experience**, available as:
+
+* **iOS App** (React Native/Expo).
+* **Android App** (React Native/Expo).
+* **Responsive Web App** (React/Next.js).
+
+---
+
+## **2. Objectives**
+
+* Provide an easy way to create fun social betting pools for events.
+* Offer a **modern UI/UX** that feels native on iOS/Android and polished on web.
+* Keep legal compliance by avoiding payment handling.
+* Ensure accessibility, scalability, and security.
+
+---
+
+## **3. Target Audience**
+
+* **Hosts:** Event organizers wanting to add gamified fun to gatherings.
+* **Guests:** Friends, family, or coworkers who want to place real-world bets with USD but settle outside the app.
+* **Groups of Friends:** Frequent social bettors looking for a sleek, mobile-first tool.
+
+---
+
+## **4. Use Cases**
+
+1. **Wedding:** Guests bet \$10 on whether the groom cries during vows.
+2. **Birthday:** Friends bet \$5 on which bar the group ends up at after dinner.
+3. **Corporate Retreat:** Colleagues bet \$20 pool on scavenger hunt winners.
+4. **Sports Party:** Guests bet \$10 on who scores the first touchdown.
+
+---
+
+## **5. Core Features & Requirements**
+
+### 5.1. **Event Creation**
+
+* Host creates event with title, description, date/time.
+* Host sets USD as the betting currency.
+* Host creates prediction questions.
+* Invite participants via code, link, or QR code.
+
+### 5.2. **Prediction/Bet Question Types**
+
+* **Multiple Choice** (e.g., which team wins).
+* **Yes/No** (e.g., will the bride cry?).
+* **Numeric Guess** (e.g., speech length in minutes).
+* **Closest Wins** (nearest numeric guess).
+* **Free Text** (manual scoring by host).
+
+### 5.3. **Bet Placement**
+
+* Guests select outcomes and **enter bet amount in USD**.
+* Show **potential winnings** based on pool.
+* Bets lock at cutoff time.
+
+### 5.4. **Scoring & Results**
+
+* Automatic scoring where answers are predefined.
+* Manual scoring for subjective questions.
+* Leaderboard updates in real time.
+* Guests reminded to settle bets outside the app.
+
+### 5.5. **Settlement**
+
+* Settlement disclaimer: *“This app does not transfer money. Please settle bets outside this platform.”*
+* Users can add payment handles (Venmo/PayPal).
+* Bets can be marked “settled” in app for record-keeping.
+
+### 5.6. **Leaderboard & Engagement**
+
+* Real-time leaderboard of winnings/losses.
+* Personal history of past bets and events.
+* Event chat thread.
+* Push notifications (reminders, results).
+
+### 5.7. **Host Tools**
+
+* Host dashboard to manage questions, participants, and scoring.
+* Control betting rules: min/max bet, cutoff times, odds.
+* Export event summary (CSV/PDF).
+
+---
+
+## **6. Technical Requirements**
+
+### 6.1. **Frontend (Modern UI)**
+
+* **Frameworks:**
+
+  * Web: React + Next.js.
+  * Mobile: React Native (Expo for cross-platform iOS/Android).
+* **UI System:** TailwindCSS (web) + NativeWind (React Native Tailwind).
+* **Component Library:** shadcn/ui for web; custom/native-styled components for mobile.
+* **Design System:** Consistent color palette, typography, spacing.
+
+  * Rounded corners, soft shadows, gradient backgrounds.
+  * Dark mode support.
+* **Responsiveness:** Mobile-first layouts, scaling to tablets & desktops.
+* **Navigation:**
+
+  * Web: Next.js routing.
+  * Mobile: React Navigation (bottom tabs for events, bets, profile).
+
+### 6.2. **Backend**
+
+* **API Layer:** Node.js (Express/NestJS).
+* **Database:** PostgreSQL (Neon or Supabase).
+* **ORM:** Prisma.
+* **Realtime:** Socket.IO or Supabase Realtime for leaderboards & live bets.
+* **Auth:** Clerk/Auth.js (social logins: Google, Apple, Facebook).
+
+### 6.3. **Database Schema (Prisma)**
+
+* **Users:** id, name, email, authProvider, venmo/paypal handle.
+* **Events:** id, hostId, title, description, date, rules.
+* **Questions:** id, eventId, type, text, options.
+* **Bets:** id, userId, questionId, chosenAnswer, betAmount, status.
+* **Results:** id, questionId, winningAnswer, settledBy.
+
+### 6.4. **Hosting & Deployment**
+
+* **Frontend (Web):** Vercel (Next.js).
+* **Mobile:** Deployed via Expo → App Store / Google Play.
+* **Backend:** Railway/Render (Node.js APIs).
+* **Database:** Neon/Supabase PostgreSQL.
+* **Realtime:** WebSockets hosted with backend.
+
+### 6.5. **Security & Legal**
+
+* Explicit disclaimer against in-app payments.
+* HTTPS/TLS encryption.
+* JWT-based auth with role-based access (host vs. guest).
+* GDPR/CCPA compliant user data handling.
+
+### 6.6. **CI/CD**
+
+* **Version Control:** GitHub → CI pipelines.
+* **Testing:** Jest + React Testing Library (web), Detox (mobile).
+* **Deployment:** Auto-deploy to Vercel (web), OTA updates with Expo for mobile.
+
+---
+
+## **7. Non-Functional Requirements**
+
+* **Performance:** <200ms average API latency.
+* **Scalability:** Support 100k concurrent users.
+* **Availability:** 99.9% uptime target.
+* **Usability:** Consistent native-like experience across iOS, Android, and browsers.
+* **Accessibility:** WCAG 2.1 AA compliance.
+
+---
+
+## **8. Monetization Strategy**
+
+* **Freemium:** Free for small events (<25 users).
+* **Premium Subscription:** Larger events, custom branding, analytics.
+* **White-labeling:** Corporate events, branded apps.
+* **Optional Upgrades:** Premium templates, custom UI themes.
+
+---
+
+## **9. Future Enhancements (Phase 2+)**
+
+* **AI-powered host suggestions** for bet questions.
+* **Group Pots** (track pooled bets).
+* **Social Media Integration** (share leaderboards).
+* **Advanced Analytics** for recurring groups.
+* **Wearables Notifications** (Apple Watch, Android Wear).
+
+---
+
+## **10. Risks & Dependencies**
+
+* Legal ambiguity → mitigated by no in-app transactions.
+* Settlement disputes → rely on social accountability.
+* UX risk if UI feels too web-like → mitigate with native design system.
+* Realtime scaling challenges → must optimize WebSocket infra.
+
+---
+
+## **11. Success Metrics**
+
+* **Adoption:** # of events created monthly.
+* **Engagement:** Average bets per user per event.
+* **Retention:** % of users attending multiple events.
+* **Virality:** Avg. invites sent per host.
+* **Revenue:** Premium upgrade conversion.
+
+---
