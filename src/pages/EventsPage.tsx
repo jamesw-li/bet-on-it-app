@@ -1,89 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Search, Filter } from 'lucide-react'
-import { Event } from '../types'
+import { useEvents } from '../hooks/useEvents'
+import { useAuth } from '../hooks/useAuth'
 import { EventCard } from '../components/events/EventCard'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
-
-// Mock data - replace with real API calls
-const mockEvents: Event[] = [
-  {
-    id: '1',
-    host_id: 'user1',
-    title: 'Sarah & Mike\'s Wedding',
-    description: 'Place your bets on our special day! Will Mike cry during the vows?',
-    event_date: '2025-06-15T18:00:00Z',
-    event_code: 'WEDDING2025',
-    status: 'upcoming',
-    created_at: '2025-01-01T00:00:00Z',
-    participants: [
-      { id: '1', event_id: '1', user_id: 'user1', joined_at: '2025-01-01T00:00:00Z' },
-      { id: '2', event_id: '1', user_id: 'user2', joined_at: '2025-01-01T00:00:00Z' },
-    ],
-    questions: [
-      {
-        id: '1',
-        event_id: '1',
-        title: 'Will Mike cry during the vows?',
-        type: 'yes_no',
-        betting_closes_at: '2025-06-15T17:30:00Z',
-        status: 'open',
-        created_at: '2025-01-01T00:00:00Z',
-        bets: [
-          { id: '1', user_id: 'user1', question_id: '1', chosen_answer: 'Yes', bet_amount: 25, status: 'active', created_at: '2025-01-01T00:00:00Z' },
-          { id: '2', user_id: 'user2', question_id: '1', chosen_answer: 'No', bet_amount: 15, status: 'active', created_at: '2025-01-01T00:00:00Z' },
-        ]
-      }
-    ]
-  },
-  {
-    id: '2',
-    host_id: 'user2',
-    title: 'Super Bowl Party 2025',
-    description: 'The biggest game of the year! Who will take home the trophy?',
-    event_date: '2025-02-09T23:30:00Z',
-    event_code: 'SUPERBOWL',
-    status: 'active',
-    created_at: '2025-01-01T00:00:00Z',
-    participants: [
-      { id: '3', event_id: '2', user_id: 'user1', joined_at: '2025-01-01T00:00:00Z' },
-      { id: '4', event_id: '2', user_id: 'user2', joined_at: '2025-01-01T00:00:00Z' },
-      { id: '5', event_id: '2', user_id: 'user3', joined_at: '2025-01-01T00:00:00Z' },
-    ],
-    questions: [
-      {
-        id: '2',
-        event_id: '2',
-        title: 'Who will win the Super Bowl?',
-        type: 'multiple_choice',
-        options: ['Kansas City Chiefs', 'Buffalo Bills', 'Detroit Lions', 'Philadelphia Eagles'],
-        betting_closes_at: '2025-02-09T23:00:00Z',
-        status: 'open',
-        created_at: '2025-01-01T00:00:00Z',
-        bets: [
-          { id: '3', user_id: 'user1', question_id: '2', chosen_answer: 'Kansas City Chiefs', bet_amount: 50, status: 'active', created_at: '2025-01-01T00:00:00Z' },
-          { id: '4', user_id: 'user2', question_id: '2', chosen_answer: 'Buffalo Bills', bet_amount: 30, status: 'active', created_at: '2025-01-01T00:00:00Z' },
-          { id: '5', user_id: 'user3', question_id: '2', chosen_answer: 'Detroit Lions', bet_amount: 20, status: 'active', created_at: '2025-01-01T00:00:00Z' },
-        ]
-      }
-    ]
-  }
-]
+import { Navigate } from 'react-router-dom'
 
 export function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([])
+  const { user } = useAuth()
+  const { events, loading } = useEvents()
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'active' | 'completed'>('all')
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setEvents(mockEvents)
-      setLoading(false)
-    }, 500)
-  }, [])
+  if (!user) {
+    return <Navigate to="/auth" replace />
+  }
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,6 +49,11 @@ export function EventsPage() {
           <Button>
             <Plus className="h-4 w-4 mr-2" />
             Create Event
+          </Button>
+        </Link>
+        <Link to="/join">
+          <Button variant="secondary">
+            Join Event
           </Button>
         </Link>
       </div>

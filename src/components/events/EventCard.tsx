@@ -2,21 +2,26 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, Users, DollarSign, Clock } from 'lucide-react'
 import { format } from 'date-fns'
-import { Event } from '../../types'
+import { Database } from '../../types/database'
 import { Card } from '../ui/Card'
+
+type Event = Database['public']['Tables']['events']['Row'] & {
+  host?: Database['public']['Tables']['profiles']['Row']
+  participants?: Database['public']['Tables']['event_participants']['Row'][]
+  questions?: (Database['public']['Tables']['questions']['Row'] & {
+    bets?: Database['public']['Tables']['bets']['Row'][]
+  })[]
+}
 
 interface EventCardProps {
   event: Event
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const totalBets = event.questions?.reduce((sum, q) => 
-    sum + (q.bets?.reduce((betSum, bet) => betSum + bet.bet_amount, 0) || 0), 0
-  ) || 0
+  const totalPool = event.total_pool || 0
+  const participantCount = event.participant_count || 0
 
-  const participantCount = event.participants?.length || 0
-
-  const getStatusColor = (status: Event['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'upcoming': return 'bg-blue-100 text-blue-800'
       case 'active': return 'bg-green-100 text-green-800'
@@ -56,7 +61,7 @@ export function EventCard({ event }: EventCardProps) {
             </div>
             <div className="flex items-center space-x-1 text-green-600 font-medium">
               <DollarSign className="h-4 w-4" />
-              <span>{totalBets.toFixed(0)}</span>
+              <span>{totalPool.toFixed(0)}</span>
             </div>
           </div>
 
@@ -67,7 +72,7 @@ export function EventCard({ event }: EventCardProps) {
             <div className="flex items-center space-x-1 text-xs text-slate-500">
               <Clock className="h-3 w-3" />
               <span>
-                {event.questions?.filter(q => q.status === 'open').length || 0} open bets
+                {event.questions?.filter(q => q.status === 'open').length || 0} questions
               </span>
             </div>
           </div>

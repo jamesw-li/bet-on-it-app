@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Card } from '../components/ui/Card'
+import toast from 'react-hot-toast'
 
-interface AuthPageProps {
-  user?: any
-}
-
-export function AuthPage({ user }: AuthPageProps) {
+export function AuthPage() {
+  const { user, signIn, signUp } = useAuth()
   const [isSignUp, setIsSignUp] = useState(false)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -26,12 +25,26 @@ export function AuthPage({ user }: AuthPageProps) {
     e.preventDefault()
     setLoading(true)
     
-    // Simulate auth - in real app, integrate with Supabase Auth
-    setTimeout(() => {
+    try {
+      if (isSignUp) {
+        if (!formData.name.trim()) {
+          toast.error('Please enter your name')
+          return
+        }
+        const { error } = await signUp(formData.email, formData.password, formData.name)
+        if (error) throw error
+        toast.success('Account created successfully! Please check your email to verify your account.')
+      } else {
+        const { error } = await signIn(formData.email, formData.password)
+        if (error) throw error
+        toast.success('Signed in successfully!')
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error)
+      toast.error(error.message || 'Authentication failed')
+    } finally {
       setLoading(false)
-      // Mock successful auth
-      console.log('Auth submitted:', formData)
-    }, 1000)
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

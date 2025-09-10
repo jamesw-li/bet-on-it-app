@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useAuth } from './hooks/useAuth'
 import { Header } from './components/layout/Header'
 import { HomePage } from './pages/HomePage'
 import { AuthPage } from './pages/AuthPage'
@@ -9,31 +10,12 @@ import { EventDetailPage } from './pages/EventDetailPage'
 import { CreateEventPage } from './pages/CreateEventPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { MyBetsPage } from './pages/MyBetsPage'
-
-// Mock user - replace with real auth
-const mockUser = {
-  id: 'user1',
-  email: 'demo@example.com',
-  name: 'Demo User',
-  created_at: '2025-01-01T00:00:00Z'
-}
+import { LeaderboardPage } from './pages/LeaderboardPage'
+import { SettlementsPage } from './pages/SettlementsPage'
+import { JoinEventPage } from './pages/JoinEventPage'
 
 function App() {
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Simulate auth check
-    setTimeout(() => {
-      // For demo purposes, auto-login
-      setUser(mockUser)
-      setLoading(false)
-    }, 1000)
-  }, [])
-
-  const handleSignOut = () => {
-    setUser(null)
-  }
+  const { user, profile, loading, signOut } = useAuth()
 
   if (loading) {
     return (
@@ -49,16 +31,19 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-        <Header user={user} onSignOut={handleSignOut} />
+        <Header user={user} profile={profile} onSignOut={signOut} />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/auth" element={<AuthPage user={user} />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
             <Route path="/create-event" element={<CreateEventPage />} />
+            <Route path="/join" element={<JoinEventPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/my-bets" element={<MyBetsPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/settlements" element={<SettlementsPage />} />
           </Routes>
         </main>
         <Toaster
