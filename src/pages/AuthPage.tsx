@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -21,6 +21,24 @@ export function AuthPage() {
     return <Navigate to="/events" replace />
   }
 
+  const getErrorMessage = (error: any) => {
+    const message = error.message || 'Authentication failed'
+    
+    if (message.includes('Invalid login credentials')) {
+      return 'Invalid email or password. Please check your credentials and try again.'
+    }
+    if (message.includes('Email not confirmed')) {
+      return 'Please check your email and click the confirmation link before signing in.'
+    }
+    if (message.includes('User not found')) {
+      return 'No account found with this email address. Please sign up first.'
+    }
+    if (message.includes('Password should be at least')) {
+      return 'Password must be at least 6 characters long.'
+    }
+    
+    return message
+  }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -41,7 +59,7 @@ export function AuthPage() {
       }
     } catch (error: any) {
       console.error('Auth error:', error)
-      toast.error(error.message || 'Authentication failed')
+      toast.error(getErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -109,9 +127,25 @@ export function AuthPage() {
                 onChange={handleInputChange}
                 className="pl-10"
                 required
+                minLength={6}
               />
             </div>
 
+            {!isSignUp && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start">
+                  <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium mb-1">Having trouble signing in?</p>
+                    <ul className="space-y-1 text-blue-700">
+                      <li>• Double-check your email and password</li>
+                      <li>• Make sure you've confirmed your email address</li>
+                      <li>• Try creating a new account if you haven't signed up yet</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
             <Button
               type="submit"
               loading={loading}
