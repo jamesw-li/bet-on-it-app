@@ -67,7 +67,7 @@ export function useBets() {
           .insert({
             event_id: betData.event_id,
             user_id: user.id
-          })
+          } as Database['public']['Tables']['event_participants']['Insert'])
       }
 
       // Place the bet

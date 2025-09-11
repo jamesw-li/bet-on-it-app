@@ -92,7 +92,7 @@ export function useAuth() {
 
     const { data, error } = await supabase
       .from('profiles')
-      .update(updates)
+      .update(updates as Database['public']['Tables']['profiles']['Update'])
       .eq('id', user.id)
       .select()
       .single()
