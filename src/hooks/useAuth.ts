@@ -91,8 +91,8 @@ export function useAuth() {
     if (!user) return { error: new Error('No user') }
 
     const { data, error } = await supabase
-      .from('profiles')
-      .update(updates as Database['public']['Tables']['profiles']['Update'])
+      .from<'profiles'>('profiles')
+      .update(updates)
       .eq('id', user.id)
       .select()
       .single()
