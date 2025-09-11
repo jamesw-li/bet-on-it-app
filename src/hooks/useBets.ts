@@ -72,7 +72,7 @@ export function useBets() {
 
       // Place the bet
       const { data, error } = await supabase
-        .from<'bets'>('bets')
+        .from('bets')
         .insert({
           ...betData,
           user_id: user.id
