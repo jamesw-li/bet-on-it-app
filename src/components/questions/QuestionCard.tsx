@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Clock, DollarSign, Users, TrendingUp } from 'lucide-react'
 import { format } from 'date-fns'
 import { Question, Bet } from '../../types'
